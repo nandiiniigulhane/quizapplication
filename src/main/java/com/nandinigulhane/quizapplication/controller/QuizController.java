@@ -12,7 +12,6 @@ import com.nandinigulhane.quizapplication.model.QuizRequest;
 import com.nandinigulhane.quizapplication.model.QuizResponse;
 import com.nandinigulhane.quizapplication.service.QuizService;
 
-
 @RestController
 @RequestMapping("/")
 public class QuizController {
@@ -24,13 +23,13 @@ public class QuizController {
     }
 
     @PostMapping("/quiz")
-    public void postQuiz(@RequestBody QuizRequest quizRequest){
+    public void postQuiz(@RequestBody QuizRequest quizRequest) {
         quizService.generateQuiz(quizRequest);
     }
 
     @GetMapping("/quiz")
-    public List<QuizResponse> getQuiz(){
+    public List<QuizResponse> getQuiz() {
         return quizService.getQuiz();
-    } 
+    }
 
 }

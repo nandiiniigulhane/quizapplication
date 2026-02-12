@@ -29,6 +29,7 @@ public class QuizService {
         String topic = quizRequest.getTopic();
         int numberOfQuestions = quizRequest.getNumberOfQuestions();
         String difficulty = quizRequest.getDifficulty();
+        quizResponses.clear();
 
         String promptText = String.format("""
                 Generate a quiz on the topic '%s' with %d questions of '%s' difficulty.
@@ -42,6 +43,7 @@ public class QuizService {
         List<QuizResponse> responses = chatClient.prompt(promptText).call()
                 .entity(new ParameterizedTypeReference<List<QuizResponse>>() {
                 });
+        
         quizResponses.addAll(responses);
 
     }

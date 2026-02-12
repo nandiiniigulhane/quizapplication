@@ -11,5 +11,5 @@ public class ChatClientConfig {
     public ChatClient customChatClient(ChatClient.Builder builder) {
         return builder.build();
     }
-    
+
 }
