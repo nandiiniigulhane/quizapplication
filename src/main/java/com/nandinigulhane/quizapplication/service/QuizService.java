@@ -1,6 +1,5 @@
 package com.nandinigulhane.quizapplication.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.ai.chat.client.ChatClient;
@@ -9,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.nandinigulhane.quizapplication.model.QuizRequest;
 import com.nandinigulhane.quizapplication.model.QuizResponse;
+import static com.nandinigulhane.quizapplication.service.Prompts.USER_PROMPT;
+import static com.nandinigulhane.quizapplication.service.Prompts.SYSTEM_PROMPT;
 
 @Service
 public class QuizService {
@@ -19,32 +20,26 @@ public class QuizService {
         this.chatClient = chatClient;
     }
 
-    List<QuizResponse> quizResponses = new ArrayList<>();
-
-    public List<QuizResponse> getQuiz() {
-        return quizResponses;
-    }
-
-    public void generateQuiz(QuizRequest quizRequest) {
+    public List<QuizResponse> generateQuiz(QuizRequest quizRequest) {
         String topic = quizRequest.getTopic();
         int numberOfQuestions = quizRequest.getNumberOfQuestions();
         String difficulty = quizRequest.getDifficulty();
-        quizResponses.clear();
+        boolean explanationNeeded = quizRequest.isExplanationNeeded();
 
-        String promptText = String.format("""
-                Generate a quiz on the topic '%s' with %d questions of '%s' difficulty.
-                Each question should have 4 options and the correct answer should be indicated.
-                Do not include any explanations or additional information, just the questions and answers.
-                Return the quiz in a structured format that can be easily parsed, such as JSON or XML.
-                Respond only with the quiz content, without any introductory or concluding text.
-                JSON should only include the question, options, and correct answer.
-                """, topic, numberOfQuestions, difficulty);
+        String userPrompt = USER_PROMPT
+                .replace("{{topic}}", topic)
+                .replace("{{numberOfQuestions}}", String.valueOf(numberOfQuestions))
+                .replace("{{difficulty}}", difficulty)
+                .replace("{{explanationNeeded}}", Boolean.toString(explanationNeeded));
 
-        List<QuizResponse> responses = chatClient.prompt(promptText).call()
+        List<QuizResponse> responses = chatClient.prompt(userPrompt)
+                .system(SYSTEM_PROMPT)
+                .user(userPrompt)
+                .call()
                 .entity(new ParameterizedTypeReference<List<QuizResponse>>() {
                 });
-        
-        quizResponses.addAll(responses);
+
+        return responses;
 
     }
 }

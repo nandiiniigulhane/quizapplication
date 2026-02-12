@@ -18,4 +18,6 @@ public class QuizRequest {
 
     private String difficulty;
 
+    private boolean explanationNeeded;
+
 }

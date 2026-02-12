@@ -15,4 +15,7 @@ public class QuizResponse {
     private List<String> options;
 
     private String answer;
+
+    private String explanation;
+
 }
